@@ -25,7 +25,7 @@ def gz():
     chromeOptions.add_experimental_option('prefs',prefs)
     chromeOptions.add_argument('--headless')
     chromeOptions.add_argument('--disable-gpu')
-    driver=webdriver.Chrome(options=chromeOptions)
+    driver=webdriver.Chrome(options=chromeOptions,executable_path='./chromedriver')
     driver.get('https://cddis.nasa.gov/archive/gnss/data/daily/2021/brdc/')
 
 
@@ -59,9 +59,11 @@ def gz():
 
 # 调用 函数
 
-gps_url()
-# 解压之后的压缩包 函数6
-gz()
+
+while True:
+  gps_url()
+  gz()
+  time.sleep(1800) # 每隔半小时执行一次
 
 
 
