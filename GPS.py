@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver  
+from selenium import webdriver
 import time
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.by import By
 import gzip
 import os
 def gps_url():
@@ -23,9 +26,10 @@ def gz():
     #下载压缩包的路径    绝对路径666
     prefs={'download.default_directory': '/Users/lucky/PycharmProjects/pythonProject/'}
     chromeOptions.add_experimental_option('prefs',prefs)
-    chromeOptions.add_argument('--headless')
-    chromeOptions.add_argument('--disable-gpu')
+    #chromeOptions.add_argument('--headless')
+    #chromeOptions.add_argument('--disable-gpu')
     driver=webdriver.Chrome(options=chromeOptions,executable_path='./chromedriver')
+    driver.implicitly_wait(30)  # 隐性等待，最长等30秒
     driver.get('https://cddis.nasa.gov/archive/gnss/data/daily/2021/brdc/')
 
 
@@ -34,11 +38,9 @@ def gz():
     driver.find_element_by_xpath('//*[@id="password"]').send_keys("990424gU")
     driver.find_element_by_xpath(('//*[@class="eui-btn--round eui-btn--green"]')).click()
     time.sleep(20)
-                    
-
-
 
     soup = BeautifulSoup(driver.page_source, 'lxml')
+
     content = soup.select('.archiveItemText')
     con = content[-1]['href'].rstrip()
     gps_url2= 'https://cddis.nasa.gov/archive/gnss/data/daily/2021/brdc/' + content[-1]['href']
@@ -46,11 +48,11 @@ def gz():
     time.sleep(10)
     driver.close()
     #print(type(con))
-    path = 'gps1.txt'
+    path = 'brdc0740.21n.txt'
     if os.path.exists(path):
         os.remove(path)
     with gzip.open(con, "rb") as f_in:
-        with open("gps1.txt", "wb")as f_out:
+        with open("brdc0740.21n.txt", "wb")as f_out:
             f_out.write(f_in.read())
 
 
